@@ -1,3 +1,5 @@
+renderEntryList(["Option 1", "Option 2", "Option 3"]);
+
 btnFileAction.addEventListener("click", openFile);
 
 async function openFile() {
@@ -25,4 +27,18 @@ async function openFile() {
   lblFileLabel.innerText = handle.name;
   btnFileAction.innerText = "Save File";
   btnFileAction.removeEventListener("click", openFile);
+}
+
+function renderEntryList(items) {
+  // Clear the current list
+  ctrEntryList.innerHTML = "";
+
+  for (let item of items) {
+    // Clone the template list item
+    let entryListItem = tplEntryListItem.content.firstElementChild.cloneNode(true);
+    entryListItem.innerText = item;
+
+    // Add it the the list element
+    ctrEntryList.append(entryListItem);
+  }
 }

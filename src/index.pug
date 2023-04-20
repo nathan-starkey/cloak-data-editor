@@ -11,10 +11,8 @@ html(data-bs-theme="dark")
               button#btnFileAction.btn.btn-primary Open File
               span#lblFileLabel.text-mute.ms-3 No file open.
             input.form-control(placeholder="Filter...").mb-3
-            div.list-group
-              button.list-group-item.list-group-item-action.active.py-1.px-3 Selected item
-              button.list-group-item.list-group-item-action.py-1.px-3 Other item 1
-              button.list-group-item.list-group-item-action.py-1.px-3 Other item 2
-              button.list-group-item.list-group-item-action.py-1.px-3 Other item 3
+            div#ctrEntryList.list-group
+            template#tplEntryListItem
+              button.list-group-item.list-group-item-action.py-1.px-3 Item
         div.col-6 Content goes here.
     script(src="js/scripts.js")
