@@ -8,8 +8,8 @@ html(data-bs-theme="dark")
         div.col-6.p-3
           div.text-nowrap
             div.mb-3
-              button.btn.btn-primary Open File
-              span.text-mute.ms-3 No file open.
+              button#btnFileAction.btn.btn-primary Open File
+              span#lblFileLabel.text-mute.ms-3 No file open.
             input.form-control(placeholder="Filter...").mb-3
             div.list-group
               button.list-group-item.list-group-item-action.active.py-1.px-3 Selected item
@@ -17,3 +17,4 @@ html(data-bs-theme="dark")
               button.list-group-item.list-group-item-action.py-1.px-3 Other item 2
               button.list-group-item.list-group-item-action.py-1.px-3 Other item 3
         div.col-6 Content goes here.
+    script(src="js/scripts.js")
