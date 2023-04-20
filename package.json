@@ -5,8 +5,10 @@
   "main": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "node build",
-    "build-watch": "nodemon -w src/ -e pug build.js"
+    "pug-compile": "node pug-compile",
+    "pug-watch": "nodemon -w src/ -e pug pug-compile.js",
+    "sass-compile": "sass --load-path=node_modules src/css/styles.scss dist/css/styles.css",
+    "sass-watch": "sass -w --load-path=node_modules src/css/styles.scss dist/css/styles.css"
   },
   "repository": {
     "type": "git",
