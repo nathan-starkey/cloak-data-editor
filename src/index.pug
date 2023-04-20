@@ -1,8 +1,19 @@
 doctype html5
 html(data-bs-theme="dark")
   head
+    title Cloak Data Editor
     link(rel="stylesheet" href="css/styles.css")
   body
-    div.container.p-5
-      h1.mb-3 Hello World!
-      button.btn.btn-primary My Button
+    div.row.g-0
+        div.col-6.p-3
+          div.text-nowrap
+            div.mb-3
+              button.btn.btn-primary Open File
+              span.text-mute.ms-3 No file open.
+            input.form-control(placeholder="Filter...").mb-3
+            div.list-group
+              button.list-group-item.list-group-item-action.active.py-1.px-3 Selected item
+              button.list-group-item.list-group-item-action.py-1.px-3 Other item 1
+              button.list-group-item.list-group-item-action.py-1.px-3 Other item 2
+              button.list-group-item.list-group-item-action.py-1.px-3 Other item 3
+        div.col-6 Content goes here.
