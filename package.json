@@ -4,7 +4,9 @@
   "description": "Editing tool used to modify/create new content for the game Cloak.",
   "main": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node build",
+    "build-watch": "nodemon -w src/ -e pug build.js"
   },
   "repository": {
     "type": "git",
@@ -17,6 +19,7 @@
   },
   "homepage": "https://github.com/nathan-starkey/cloak-data-editor#readme",
   "dependencies": {
+    "@types/pug": "^2.0.6",
     "bootstrap": "^5.3.0-alpha3",
     "pug": "^3.0.2"
   }
