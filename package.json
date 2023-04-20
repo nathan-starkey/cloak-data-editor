@@ -1,0 +1,23 @@
+{
+  "name": "cloak-data-editor",
+  "version": "0.0.0",
+  "description": "Editing tool used to modify/create new content for the game Cloak.",
+  "main": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nathan-starkey/cloak-data-editor.git"
+  },
+  "author": "Redstar Dev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nathan-starkey/cloak-data-editor/issues"
+  },
+  "homepage": "https://github.com/nathan-starkey/cloak-data-editor#readme",
+  "dependencies": {
+    "bootstrap": "^5.3.0-alpha3",
+    "pug": "^3.0.2"
+  }
+}
