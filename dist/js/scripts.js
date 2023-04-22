@@ -37,8 +37,19 @@ function renderEntryList(items) {
     // Clone the template list item
     let entryListItem = tplEntryListItem.content.firstElementChild.cloneNode(true);
     entryListItem.innerText = item;
+    entryListItem.addEventListener("click", e => selectEntryListItem(entryListItem));
 
     // Add it the the list element
     ctrEntryList.append(entryListItem);
+  }
+}
+
+function selectEntryListItem(entryListItem) {
+  let prevSelected = ctrEntryList.querySelector(".active");
+
+  prevSelected?.classList.remove("active");
+
+  if (prevSelected != entryListItem && entryListItem) {
+    entryListItem.classList.add("active");
   }
 }
