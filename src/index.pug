@@ -3,16 +3,17 @@ html(data-bs-theme="dark")
   head
     title Cloak Data Editor
     link(rel="stylesheet" href="css/styles.css")
-  body
-    div.row.g-0
-        div.col-6.p-3
-          div.text-nowrap
-            div.mb-3
+  body.h-100
+    div.row.g-0.h-100
+        div.col-6.p-3.d-flex.flex-column.h-100
+          div
+            div.mb-3.overflow-ellipsis
               button#btnFileAction.btn.btn-primary Open File
               span#lblFileLabel.text-mute.ms-3 No file open.
             input.form-control(placeholder="Filter...").mb-3
+          div.overflow-auto.flex-grow-1
             div#ctrEntryList.list-group
-            template#tplEntryListItem
-              button.list-group-item.list-group-item-action.py-1.px-3 Item
         div.col-6 Content goes here.
+    template#tplEntryListItem
+      button.list-group-item.list-group-item-action.py-1.px-3.overflow-ellipsis Item
     script(src="js/scripts.js")

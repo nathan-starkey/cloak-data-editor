@@ -18,3 +18,10 @@ $primary: #6610f2;
 @import "bootstrap/scss/list-group";
 @import "bootstrap/scss/utilities";
 @import "bootstrap/scss/utilities/api";
+
+// Additional styles
+.overflow-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
