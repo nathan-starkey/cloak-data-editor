@@ -1,10 +1,14 @@
 let handle = null;
 let content = null;
 
-// renderEntryList(["Option 1", "Option 2", "Option 3"]);
+window.addEventListener("DOMContentLoaded", () => {
+  btnFileAction.addEventListener("click", openFile);
+});
 
-btnFileAction.addEventListener("click", openFile);
-
+/**
+ * Request a file handle from the user and render the view with it's contents.
+ * @returns {Promise<void>} A promise that resolves after completion/error catching.
+ */
 async function openFile() {
   btnFileAction.disabled = true;
 
@@ -46,13 +50,20 @@ async function openFile() {
   btnFileAction.innerText = "Save File";
   btnFileAction.removeEventListener("click", openFile);
   btnFileAction.addEventListener("click", saveFile);
-  renderEntryList([
-    ...content.creatures.map(o => o.id),
-    ...content.tiles.map(o => o.id),
-    ...content.worlds.map(o => o.id)
-  ]);
+
+  let entries = [];
+
+  for (let list of ["creatures", "tiles", "worlds"]) {
+    entries.push(...content[list].map(o => [list, o.id]));
+  }
+
+  renderEntries(entries);
 }
 
+/**
+ * Write the 'content' as text to the file handle.
+ * @returns {Promise<void>} A promise that resolves after completion/error catching.
+ */
 async function saveFile() {
   btnFileAction.disabled = true;
 
@@ -63,34 +74,45 @@ async function saveFile() {
   } catch (e) {
     alert("Problem encountered while trying to write to the file:\n\n" + e);
     btnFileAction.disabled = false;
-    return
+    return;
   }
 }
 
-function renderEntryList(items) {
+/**
+ * Render a list of entries as-is (no sorting is applied here).
+ * @param {[list: string, id: string][]} entries - The list of entries to render, each consisting of a list name and entry ID.
+ */
+function renderEntries(entries) {
   // Clear the current list
   ctrEntryList.innerHTML = "";
 
-  // Sort the list in alphabetic order
-  items.sort((a, b) => a < b ? -1 : 1);
-
-  for (let item of items) {
+  for (let [list, name] of entries) {
     // Clone the template list item
-    let entryListItem = tplEntryListItem.content.firstElementChild.cloneNode(true);
-    entryListItem.innerText = item;
-    entryListItem.addEventListener("click", e => selectEntryListItem(entryListItem));
+    let item = tplEntryListItem.content.firstElementChild.cloneNode(true);
+    item.innerText = name;
+    item.dataset.list = list;
+    item.dataset.name = name;
+    item.addEventListener("click", e => selectEntry(item));
 
     // Add it the the list element
-    ctrEntryList.append(entryListItem);
+    ctrEntryList.append(item);
   }
 }
 
-function selectEntryListItem(entryListItem) {
-  let prevSelected = ctrEntryList.querySelector(".active");
+/**
+ * Selects an item from the entries list.
+ * @param {HTMLElement | null} item - The item element to select, or null to deselect all items.
+ */
+function selectEntry(item) {
+  let prev = ctrEntryList.querySelector(".active");
 
-  prevSelected?.classList.remove("active");
+  // Deselect the previously selected item
+  if (prev) {
+    prev.classList.remove("active");
+  }
 
-  if (prevSelected != entryListItem && entryListItem) {
-    entryListItem.classList.add("active");
+  // Select this item if it was not previously selected
+  if (prev != item && item) {
+    item.classList.add("active");
   }
 }
