@@ -6,6 +6,9 @@ html(data-bs-theme="dark")
   head
     title Cloak Data Editor
     link(rel="stylesheet" href="css/styles.css")
+    //- Scripts
+    script(src="js/scripts.js")
+    script(src="js/cloak.js")
   body.h-100
     //- Container
     div.row.g-0.h-100
@@ -28,9 +31,7 @@ html(data-bs-theme="dark")
         div.fade-bottom.sticky-bottom
       //- Main content
       div.col-6.h-100.overflow-y-auto
-        include layouts/creatures-form
+        include layouts/forms
     //- Templates
     template#tplEntryListItem
       button.list-group-item.list-group-item-action.py-1.px-3.overflow-ellipsis Item
-    //- Scripts
-    script(src="js/scripts.js")

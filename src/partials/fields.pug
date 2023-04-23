@@ -32,5 +32,5 @@ mixin mlstring(name, label)
     block
 
 mixin form
-  form.p-3.pb-0(autocomplete="off" onsubmit="event.preventDefault()")
+  form.p-3.pb-0(autocomplete="off" onsubmit="event.preventDefault()" oninput="unsave()")
     block

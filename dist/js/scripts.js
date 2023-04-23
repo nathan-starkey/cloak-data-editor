@@ -10,16 +10,40 @@ let handle = null;
  */
 let content = null;
 
+/**
+ * Function that transforms and returns a piece of data. Note that it may act directly on the input data.
+ * @typedef {(data: Object) => Object} processor
+ */
+
+/**
+ * Represents a this editor's standard definition of a form.
+ * @typedef {Object} RegistryEntry
+ * @property {HTMLFormElement} form - An HTMLFormElement.
+ * @property {Object} processors
+ * @property {processor[]} processors.get - List of processors to transform the exported data.
+ * @property {processor[]} processors.set - List of processors to transform the imported data.
+ */
+
+/**
+ * Global record of forms, mapped by their list's name.
+ * @type {Object.<string, RegistryEntry>}
+ */
+const registry = {};
+
 window.addEventListener("DOMContentLoaded", () => {
+  // Document is ready for us to attach some events.
   btnFileAction.addEventListener("click", openFile);
 });
 
 window.addEventListener("keydown", ev => {
+  // When CTRL+S is pressed...
   if (ev.code == "KeyS" && ev.ctrlKey) {
     ev.preventDefault();
     ev.stopImmediatePropagation();
     
+    // ...and a file is currently open...
     if (handle) {
+      // ...then, save the file.
       btnFileAction.click();
     }
   }
@@ -185,7 +209,7 @@ function setControlValue(elem, value) {
  * @param {HTMLFormElement} form - Any HTML form element.
  * @returns {Object} An object mapping each control name to its control's value.
  */
-function getFormValue(form) {
+function getFormData(form) {
   let obj = {};
 
   Array.from(form.elements).forEach(elem => obj[elem.name] = getControlValue(elem));
@@ -198,6 +222,39 @@ function getFormValue(form) {
  * @param {HTMLFormElement} form - Any HTML form element.
  * @param {Object} obj - An object mapping each control name to any value.
  */
-function setFormValue(form, obj) {
+function setFormData(form, obj) {
   Array.from(form.elements).map(elem => setControlValue(elem, obj[elem.name]));
+}
+
+/**
+ * Run a set of processing functions on a piece of data.
+ * @param {processor[]} [processors=[]] - A list of functions to process the data with.
+ */
+function process(data, processors = []) {
+  for (let processor of processors) {
+    data = processor(data);
+  }
+
+  return data;
+}
+
+/**
+ * Get the last form in the document so far. Used to easily reference newly created form elements without an ID.
+ * @returns An HTMLFormElement.
+ */
+function getLastForm() {
+  let forms = document.getElementsByTagName("form");
+
+  return forms[forms.length - 1];
+}
+
+/**
+ * Function for external scripts to attach their own forms.
+ * @param {string} list - The ID associated with this form.
+ * @param {RegistryEntry} entry - A {@link RegistryEntry} structure.
+ */
+function register(list, entry) {
+  entry.form.hidden = true;
+
+  registry[list] = entry;
 }

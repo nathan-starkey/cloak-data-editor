@@ -9,6 +9,10 @@
       rel="stylesheet"
       href="css/styles.css"
     >
+    <script src="js/scripts.js">
+    </script>
+    <script src="js/cloak.js">
+    </script>
   </head>
   <body class="h-100">
     <div class="row g-0 h-100">
@@ -53,6 +57,7 @@
           class="p-3 pb-0"
           autocomplete="off"
           onsubmit="event.preventDefault()"
+          oninput="unsave()"
         >
           <div class="mb-3">
             <label class="form-label">
@@ -172,6 +177,15 @@
             </div>
           </div>
         </form>
+        <script>
+          register("creatures", {
+  form: getLastForm(),
+  processors: {
+    get: [packSprites],
+    set: [unpackSprites]
+  }
+});
+        </script>
       </div>
     </div>
     <template id="tplEntryListItem">
@@ -179,7 +193,5 @@
         Item
       </button>
     </template>
-    <script src="js/scripts.js">
-    </script>
   </body>
 </html>
