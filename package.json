@@ -5,10 +5,12 @@
   "main": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "compile": "npm-run-all -p pug-compile sass-compile",
+    "watch": "npm-run-all -p pug-watch sass-watch",
     "pug-compile": "node pug-compile",
     "pug-watch": "nodemon -w src/ -e pug pug-compile.js",
-    "sass-compile": "sass --load-path=node_modules src/css/styles.scss dist/css/styles.css",
-    "sass-watch": "sass -w --load-path=node_modules src/css/styles.scss dist/css/styles.css"
+    "sass-compile": "sass --load-path=node_modules src/scss/styles.scss dist/css/styles.css",
+    "sass-watch": "sass -w --load-path=node_modules src/scss/styles.scss dist/css/styles.css"
   },
   "repository": {
     "type": "git",
@@ -23,6 +25,7 @@
   "dependencies": {
     "@types/pug": "^2.0.6",
     "bootstrap": "^5.3.0-alpha3",
+    "npm-run-all": "^4.1.5",
     "pug": "^3.0.2"
   }
 }
