@@ -18,7 +18,10 @@ window.addEventListener("keydown", ev => {
   if (ev.code == "KeyS" && ev.ctrlKey) {
     ev.preventDefault();
     ev.stopImmediatePropagation();
-    btnFileAction.click();
+    
+    if (handle) {
+      btnFileAction.click();
+    }
   }
 });
 
