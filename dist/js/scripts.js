@@ -1,4 +1,13 @@
+/**
+ * Global reference to the chosen file handle.
+ * @type {FileSystemFileHandle | null}
+ */
 let handle = null;
+
+/**
+ * Global reference to the file's JSON content.
+ * @type {Object}
+ */
 let content = null;
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -115,4 +124,62 @@ function selectEntry(item) {
   if (prev != item && item) {
     item.classList.add("active");
   }
+}
+
+/**
+ * Get the value of an HTML form control.
+ * @param {HTMLElement} elem - Any HTML form control.
+ * @returns {any} The value from the control.
+ */
+function getControlValue(elem) {
+  if (elem.nodeName == "INPUT") {
+    if (elem.type == "number") {
+      return Number.isNaN(elem.valueAsNumber) ? 0 : elem.valueAsNumber;
+    } else if (elem.type == "checkbox") {
+      return elem.checked;
+    }
+  }
+
+  return elem.value;
+}
+
+/**
+ * Set the value of an HTML form control.
+ * @param {HTMLElement} elem - Any HTML form control.
+ * @param {*} value - The value to set the control with.
+ */
+function setControlValue(elem, value) {
+  if (elem.nodeName == "INPUT") {
+    if (elem.type == "number") {
+      elem.valueAsNumber = value;
+      return;
+    } else if (elem.type == "checkbox") {
+      elem.checked = value;
+      return;
+    }
+  }
+
+  elem.value ??= value;
+}
+
+/**
+ * Get the values of a form's named control elements.
+ * @param {HTMLFormElement} form - Any HTML form element.
+ * @returns {Object} An object mapping each control name to its control's value.
+ */
+function getFormValue(form) {
+  let obj = {};
+
+  Array.from(form.elements).forEach(elem => obj[elem.name] = getControlValue(elem));
+
+  return obj;
+}
+
+/**
+ * Set the values of a form's named control elements.
+ * @param {HTMLFormElement} form - Any HTML form element.
+ * @param {Object} obj - An object mapping each control name to any value.
+ */
+function setFormValue(form, obj) {
+  Array.from(form.elements).map(elem => setControlValue(elem, obj[elem.name]));
 }
