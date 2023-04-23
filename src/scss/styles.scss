@@ -16,12 +16,28 @@ $primary: #6610f2;
 @import "bootstrap/scss/buttons";
 @import "bootstrap/scss/button-group";
 @import "bootstrap/scss/list-group";
+@import "bootstrap/scss/helpers";
 @import "bootstrap/scss/utilities";
 @import "bootstrap/scss/utilities/api";
 
 // Additional styles
+
 .overflow-ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.overflow-y-scroll {
+  overflow-y: scroll;
+}
+
+.fade-top {
+  background-image: linear-gradient($body-bg-dark 25%, transparent);
+  height: map-get($spacers, 3);
+}
+
+.fade-bottom {
+  background-image: linear-gradient(transparent, $body-bg-dark 75%);
+  height: map-get($spacers, 3);
 }

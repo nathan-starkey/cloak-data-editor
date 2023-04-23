@@ -5,14 +5,17 @@ html(data-bs-theme="dark")
     link(rel="stylesheet" href="css/styles.css")
   body.h-100
     div.row.g-0.h-100
-        div.col-6.p-3.d-flex.flex-column.h-100
-          div
-            div.mb-3.overflow-ellipsis
-              button#btnFileAction.btn.btn-primary Open File
-              span#lblFileLabel.text-mute.ms-3 No file open.
-            input.form-control(placeholder="Filter...").mb-3
-          div.overflow-auto.flex-grow-1
+        div.col-6.h-100.overflow-y-scroll
+          div.sticky-top
+            div.p-3.pb-0.bg-dark.position-relative
+              div.mb-3.overflow-ellipsis
+                button#btnFileAction.btn.btn-primary Open File
+                span#lblFileLabel.text-mute.ms-3 No file open.
+              input.form-control(placeholder="Filter...")
+            div.fade-top
+          div.p-3.py-0
             div#ctrEntryList.list-group
+          div.fade-bottom.sticky-bottom
         div.col-6 Content goes here.
     template#tplEntryListItem
       button.list-group-item.list-group-item-action.py-1.px-3.overflow-ellipsis Item
