@@ -14,6 +14,14 @@ window.addEventListener("DOMContentLoaded", () => {
   btnFileAction.addEventListener("click", openFile);
 });
 
+window.addEventListener("keydown", ev => {
+  if (ev.code == "KeyS" && ev.ctrlKey) {
+    ev.preventDefault();
+    ev.stopImmediatePropagation();
+    btnFileAction.click();
+  }
+});
+
 /**
  * Request a file handle from the user and render the view with it's contents.
  * @returns {Promise<void>} A promise that resolves after completion/error catching.
@@ -85,6 +93,13 @@ async function saveFile() {
     btnFileAction.disabled = false;
     return;
   }
+}
+
+/**
+ * Update the view to indicate that changes are not saved.
+ */
+function unsave() {
+  btnFileAction.disabled = false;
 }
 
 /**
