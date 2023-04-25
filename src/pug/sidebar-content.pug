@@ -1,0 +1,14 @@
+extends extends/scrollable
+
+block top
+  .bg-dark.position-relative.p-3.pb-0
+    .mb-3.overflow-ellipsis
+      button#btnFileAction.btn.btn-primary Open File
+      span#lblFileLabel.text-mute.ms-3 No file open.
+    input.form-control(placeholder="Filter..." disabled)
+
+block middle
+  div.p-3.py-0
+    div#ctrEntryList.list-group
+
+block bottom

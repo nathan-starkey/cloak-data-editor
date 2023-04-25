@@ -1,0 +1,21 @@
+doctype html5
+html(data-bs-theme="dark")
+  head
+    title
+      block title
+        | Editor
+
+    block styles
+      link(rel="stylesheet" href="css/styles.css")
+
+    block scripts
+      script(src="js/form.js")
+      script(src="js/scripts.js")
+
+  body.h-100
+    block body
+      div.row.g-0.h-100
+        div.col-6.h-100.overflow-y-auto
+          block sidebar
+        div.col-6.h-100.overflow-y-auto
+          block main

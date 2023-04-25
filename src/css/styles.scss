@@ -36,12 +36,12 @@ $enable-transitions: false;
   overflow-y: auto;
 }
 
-.fade-top {
+.fade-out {
   background-image: linear-gradient($body-bg-dark 25%, transparent);
   height: map-get($spacers, 3);
 }
 
-.fade-bottom {
+.fade-in {
   background-image: linear-gradient(transparent, $body-bg-dark 75%);
   height: map-get($spacers, 3);
 }

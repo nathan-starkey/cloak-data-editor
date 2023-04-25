@@ -1,38 +1,15 @@
-//- Mixins
-include partials/fields
-//- Document
-doctype html5
-html(data-bs-theme="dark")
-  head
-    title Cloak Data Editor
-    link(rel="stylesheet" href="css/styles.css")
-    //- Scripts
-    script(src="js/form.js")
-    script(src="js/scripts.js")
-    script(src="js/cloak.js")
-  body.h-100
-    //- Container
-    div.row.g-0.h-100
-      //- Left sidebar
-      div.col-6.h-100.overflow-y-auto
-        //- Sticky header
-        div.sticky-top
-          div.p-3.pb-0.bg-dark.position-relative
-            div.mb-3.overflow-ellipsis
-              //- File action button
-              button#btnFileAction.btn.btn-primary Open File
-              //- File label
-              span#lblFileLabel.text-mute.ms-3 No file open.
-            //- Filter input
-            input.form-control(placeholder="Filter..." disabled)
-          div.fade-top
-        //- Entries list
-        div.p-3.py-0
-          div#ctrEntryList.list-group
-        div.fade-bottom.sticky-bottom
-      //- Main content
-      div.col-6.h-100.overflow-y-auto
-        include layouts/forms
-    //- Templates
-    template#tplEntryListItem
-      button.list-group-item.list-group-item-action.py-1.px-3.overflow-ellipsis Item
+extends pug/extends/page
+
+block title
+  | Cloak Data Editor
+
+append body
+  template#tplEntryListItem
+    button.list-group-item.list-group-item-action.py-1.px-3.overflow-ellipsis Item
+
+block sidebar
+  include pug/sidebar-content
+
+block main
+  include pug/forms/form
+  include pug/forms/creatures
