@@ -9,6 +9,8 @@
       rel="stylesheet"
       href="css/styles.css"
     >
+    <script src="js/form.js">
+    </script>
     <script src="js/scripts.js">
     </script>
     <script src="js/cloak.js">
@@ -179,7 +181,7 @@
         </form>
         <script>
           register("creatures", {
-  form: getLastForm(),
+  form: document.forms[document.forms.length - 1],
   processors: {
     get: [packSprites],
     set: [unpackSprites]

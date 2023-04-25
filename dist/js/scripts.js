@@ -169,64 +169,6 @@ function selectEntry(item) {
 }
 
 /**
- * Get the value of an HTML form control.
- * @param {HTMLElement} elem - Any HTML form control.
- * @returns {any} The value from the control.
- */
-function getControlValue(elem) {
-  if (elem.nodeName == "INPUT") {
-    if (elem.type == "number") {
-      return Number.isNaN(elem.valueAsNumber) ? 0 : elem.valueAsNumber;
-    } else if (elem.type == "checkbox") {
-      return elem.checked;
-    }
-  }
-
-  return elem.value;
-}
-
-/**
- * Set the value of an HTML form control.
- * @param {HTMLElement} elem - Any HTML form control.
- * @param {*} value - The value to set the control with.
- */
-function setControlValue(elem, value) {
-  if (elem.nodeName == "INPUT") {
-    if (elem.type == "number") {
-      elem.valueAsNumber = value;
-      return;
-    } else if (elem.type == "checkbox") {
-      elem.checked = value;
-      return;
-    }
-  }
-
-  elem.value ??= value;
-}
-
-/**
- * Get the values of a form's named control elements.
- * @param {HTMLFormElement} form - Any HTML form element.
- * @returns {Object} An object mapping each control name to its control's value.
- */
-function getFormData(form) {
-  let obj = {};
-
-  Array.from(form.elements).forEach(elem => obj[elem.name] = getControlValue(elem));
-
-  return obj;
-}
-
-/**
- * Set the values of a form's named control elements.
- * @param {HTMLFormElement} form - Any HTML form element.
- * @param {Object} obj - An object mapping each control name to any value.
- */
-function setFormData(form, obj) {
-  Array.from(form.elements).map(elem => setControlValue(elem, obj[elem.name]));
-}
-
-/**
  * Run a set of processing functions on a piece of data.
  * @param {processor[]} [processors=[]] - A list of functions to process the data with.
  */
@@ -236,16 +178,6 @@ function process(data, processors = []) {
   }
 
   return data;
-}
-
-/**
- * Get the last form in the document so far. Used to easily reference newly created form elements without an ID.
- * @returns An HTMLFormElement.
- */
-function getLastForm() {
-  let forms = document.getElementsByTagName("form");
-
-  return forms[forms.length - 1];
 }
 
 /**
