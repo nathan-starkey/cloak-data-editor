@@ -45,3 +45,7 @@ $enable-transitions: false;
   background-image: linear-gradient(transparent, $body-bg-dark 75%);
   height: map-get($spacers, 3);
 }
+
+#sidebar {
+  width: 300px;
+}

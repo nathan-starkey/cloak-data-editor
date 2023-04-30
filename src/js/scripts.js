@@ -1,192 +1,234 @@
-/**
- * Global reference to the chosen file handle.
- * @type {FileSystemFileHandle | null}
- */
-let handle = null;
+//#region State
 
-/**
- * Global reference to the file's JSON content.
- * @type {Object}
- */
-let content = null;
+const openFilePickerOpts = {
+  types: [{
+    accept: { "application/json": [".json"] },
+    description: "JSON files"
+  }]
+};
 
-/**
- * Function that transforms and returns a piece of data. Note that it may act directly on the input data.
- * @typedef {(data: Object) => Object} processor
- */
+let isBusy = false;
+let isSaved = true;
+let theHandle = null;
+let theContent = null;
+let theItem = null;
+let theFormName = "";
+let theItemId = "";
+let theFilterTerms = [];
 
-/**
- * Represents a this editor's standard definition of a form.
- * @typedef {Object} RegistryEntry
- * @property {HTMLFormElement} form - An HTMLFormElement.
- * @property {Object} processors
- * @property {processor[]} processors.get - List of processors to transform the exported data.
- * @property {processor[]} processors.set - List of processors to transform the imported data.
- */
+//#endregion
 
-/**
- * Global record of forms, mapped by their list's name.
- * @type {Object.<string, RegistryEntry>}
- */
-const registry = {};
+//#region Public API
 
-window.addEventListener("DOMContentLoaded", () => {
-  // Document is ready for us to attach some events.
-  btnFileAction.addEventListener("click", openFile);
-});
+async function obtainHandle() {
+  if (isBusy) return;
 
-window.addEventListener("keydown", ev => {
-  // When CTRL+S is pressed...
-  if (ev.code == "KeyS" && ev.ctrlKey) {
-    ev.preventDefault();
-    ev.stopImmediatePropagation();
-    
-    // ...and a file is currently open...
-    if (handle) {
-      // ...then, save the file.
-      btnFileAction.click();
+  isBusy = true;
+  updateFileStatus();
+  
+  let handle;
+
+  try {
+    [handle] = await showOpenFilePicker(openFilePickerOpts);
+    await setHandle(handle);
+  } catch (err) {
+    if (handle) alert(err);
+  }
+
+  isBusy = false;
+  updateFileStatus();
+}
+
+async function saveChanges() {
+  if (isBusy) return;
+
+  isBusy = true;
+  updateFileStatus();
+
+  try {
+    const writable = await theHandle.createWritable();
+    const content = structuredClone(theContent);
+    const text = JSON.stringify(serialize(content));
+    await writable.write(text);
+    await writable.close();
+
+    isSaved = true;
+  } catch (err) {
+    alert(err);
+  }
+
+  isBusy = false;
+  updateFileStatus();
+  updateList();
+}
+
+function editItem(item, itemId, formName) {
+  if (isItemSelected(itemId, formName)) {
+    theItem = null;
+    theItemId = "";
+    theFormName = "";
+  } else {
+    theItem = item;
+    theItemId = itemId;
+    theFormName = formName;
+  }
+
+  updateList();
+  updateForm();
+}
+
+function modifyForm() {
+  let form = document.forms.namedItem(theFormName);
+
+  Object.assign(theItem, getFormValues(form));
+
+  isSaved = false;
+  updateFileStatus();
+}
+
+let a = {
+  filter: "string",
+  within: "",
+  invert: false
+};
+
+function setFilterString(string) {
+  theFilterTerms = string.split(" ").filter(s => s).map(s => {
+    let arr = s.split(":");
+    let filter;
+    let within;
+    let invert;
+
+    if (arr.length == 1) {
+      within = "";
+      filter = arr[0];
+    } else {
+      within = arr[0];
+      filter = arr[1];
+    }
+
+    invert = filter[0] == "!";
+
+    if (invert) {
+      filter = filter.slice(1);
+    }
+
+    return {
+      filter,
+      within,
+      invert
+    };
+  });
+
+  updateList();
+}
+
+//#endregion
+
+//#region Internal API
+
+async function setHandle(handle) {
+  const file = await handle.getFile();
+  const text = await file.text();
+  const content = deserialize(JSON.parse(text));
+
+  theHandle = handle;
+  theContent = content;
+  updateList();
+}
+
+function modifyList() {
+  updateList();
+}
+
+function isItemSelected(itemId, formName) {
+  return itemId && theItemId && itemId == theItemId && formName == theFormName;
+}
+
+function isItemShown(itemId, formName) {
+  for (let term of theFilterTerms) {
+    if (term.within && term.invert == formName.startsWith(term.within)) continue;
+    if (term.filter && term.invert == itemId.startsWith(term.filter)) continue;
+    return true;
+  }
+
+  return theFilterTerms.length == 0;
+}
+
+//#endregion
+
+//#region View
+
+const fileNameLbl = document.getElementById("fileNameLbl");
+const openFileBtn = document.getElementById("openFileBtn");
+const saveFileBtn = document.getElementById("saveFileBtn");
+const searchBox = document.getElementById("searchBox");
+const listItem = document.getElementById("listItem");
+const listDiv = document.getElementById("listDiv");
+const sidebar = document.getElementById("sidebar");
+
+openFileBtn.addEventListener("click", obtainHandle);
+saveFileBtn.addEventListener("click", saveChanges);
+searchBox.addEventListener("input", () => setFilterString(searchBox.value));
+
+function updateFileStatus() {
+  fileNameLbl.innerText = theHandle ? theHandle.name : "No file open.";
+  openFileBtn.hidden = theHandle;
+  saveFileBtn.hidden = !theHandle;
+  openFileBtn.disabled = isBusy;
+  saveFileBtn.disabled = isBusy || isSaved;
+}
+
+function updateList() {
+  let scrollTop = sidebar.scrollTop;
+  let template = listItem.content.firstElementChild;
+
+  searchBox.disabled = false;
+  listDiv.innerHTML = "";
+
+  let list = [];
+
+  for (let formName in theContent) {
+    if (!Array.isArray(theContent[formName])) continue;
+
+    for (let item of theContent[formName]) {
+      list.push([item, formName]);
     }
   }
-});
 
-/**
- * Request a file handle from the user and render the view with it's contents.
- * @returns {Promise<void>} A promise that resolves after completion/error catching.
- */
-async function openFile() {
-  btnFileAction.disabled = true;
+  list.sort(([a], [b]) => !b.id || a.id < b.id ? -1 : a.id == b.id ? 0 : 1);
 
-  let handle_;
-  let content_;
+  for (let [item, formName] of list) {
+    if (!isItemShown(item.id || "", formName)) {
+      continue;
+    }
 
-  let options = {
-    types: [{
-      description: "JSON Files",
-      accept: { "application/json": [".json"] }
-    }]
-  };
+    let btn = template.cloneNode(true);
+    btn.innerText = item.id;
+    btn.addEventListener("click", editItem.bind(null, item, item.id, formName));
+    listDiv.append(btn);
 
-  try {
-    // Request a file handle from the user
-    [handle_] = await showOpenFilePicker(options);
-  } catch (e) {
-    // Perhaps the user cancelled this action
-    btnFileAction.disabled = false;
-    return;
+    if (isItemSelected(item.id, formName)) {
+      btn.classList.add("active");
+    }
   }
 
-  try {
-    let blob = await handle_.getFile();
-    let text = await blob.text();
-    content_ = JSON.parse(text);
-  } catch (e) {
-    // Something went wrong loading the file
-    alert("Problem encountered while trying to read the file:\n\n" + e);
-    btnFileAction.disabled = false;
-    return;
-  }
-
-  handle = handle_;
-  content = content_;
-
-  // Update our view with the file's data
-  lblFileLabel.innerText = handle_.name;
-  btnFileAction.innerText = "Save File";
-  btnFileAction.removeEventListener("click", openFile);
-  btnFileAction.addEventListener("click", saveFile);
-
-  let entries = [];
-
-  for (let list of ["creatures", "tiles", "worlds"]) {
-    entries.push(...content[list].map(o => [list, o.id]));
-  }
-
-  renderEntries(entries);
+  sidebar.scrollTop = scrollTop;
 }
 
-/**
- * Write the 'content' as text to the file handle.
- * @returns {Promise<void>} A promise that resolves after completion/error catching.
- */
-async function saveFile() {
-  btnFileAction.disabled = true;
+function updateForm() {
+  for (let form of document.forms) {
+    form.hidden = true;
+  }
 
-  try {
-    let writable = await handle.createWritable();
-    writable.write(JSON.stringify(content));
-    writable.close();
-  } catch (e) {
-    alert("Problem encountered while trying to write to the file:\n\n" + e);
-    btnFileAction.disabled = false;
-    return;
+  if (theItem) {
+    let form = document.forms.namedItem(theFormName);
+
+    if (form) {
+      form.hidden = false;
+      setFormValues(form, theItem);
+    }
   }
 }
 
-/**
- * Update the view to indicate that changes are not saved.
- */
-function unsave() {
-  btnFileAction.disabled = false;
-}
-
-/**
- * Render a list of entries as-is (no sorting is applied here).
- * @param {[list: string, id: string][]} entries - The list of entries to render, each consisting of a list name and entry ID.
- */
-function renderEntries(entries) {
-  // Clear the current list
-  ctrEntryList.innerHTML = "";
-
-  for (let [list, name] of entries) {
-    // Clone the template list item
-    let item = tplEntryListItem.content.firstElementChild.cloneNode(true);
-    item.innerText = name;
-    item.dataset.list = list;
-    item.dataset.name = name;
-    item.addEventListener("click", e => selectEntry(item));
-
-    // Add it the the list element
-    ctrEntryList.append(item);
-  }
-}
-
-/**
- * Selects an item from the entries list.
- * @param {HTMLElement | null} item - The item element to select, or null to deselect all items.
- */
-function selectEntry(item) {
-  let prev = ctrEntryList.querySelector(".active");
-
-  // Deselect the previously selected item
-  if (prev) {
-    prev.classList.remove("active");
-  }
-
-  // Select this item if it was not previously selected
-  if (prev != item && item) {
-    item.classList.add("active");
-  }
-}
-
-/**
- * Run a set of processing functions on a piece of data.
- * @param {processor[]} [processors=[]] - A list of functions to process the data with.
- */
-function process(data, processors = []) {
-  for (let processor of processors) {
-    data = processor(data);
-  }
-
-  return data;
-}
-
-/**
- * Function for external scripts to attach their own forms.
- * @param {string} list - The ID associated with this form.
- * @param {RegistryEntry} entry - A {@link RegistryEntry} structure.
- */
-function register(list, entry) {
-  entry.form.hidden = true;
-
-  registry[list] = entry;
-}
+//#endregion

@@ -1,15 +1,47 @@
-extends pug/extends/page
+doctype html
+html.h-100(data-bs-theme="dark")
+  head
+    title Cloak Data Editor
+    link(rel="stylesheet" href="css/styles.css")
+  
+  body.h-100
+    div.row.g-0.h-100
+      div#sidebar.h-100.overflow-y-auto
+        //- Sidebar content
+        div.sticky-top
+          div.bg-dark.position-relative.p-3.pb-0
+            //- File status container
+            div.mb-3.overflow-ellipsis
+              button#openFileBtn.btn.btn-primary Open File
+              button#saveFileBtn.btn.btn-primary(hidden) Save File
+              span#fileNameLbl.text-mute.ms-3 No file open.
+            
+            input#searchBox.form-control(placeholder="Filter..."  spellcheck="false" disabled title=`Examples:
+bandit
+!bandit
+creatures:
+creatures:bandit
+c:!band`)
 
-block title
-  | Cloak Data Editor
+          div.fade-out
 
-append body
-  template#tplEntryListItem
-    button.list-group-item.list-group-item-action.py-1.px-3.overflow-ellipsis Item
+        div.p-3.py-0
+          div#listDiv.list-group
 
-block sidebar
-  include pug/sidebar-content
+        div.sticky-bottom
+          div.fade-in
 
-block main
-  include pug/forms/form
-  include pug/forms/creatures
+      div.col.h-100.overflow-y-auto
+        //- Main content
+        include forms/mixins
+        include forms/creatures
+        include forms/tiles
+        include forms/worlds
+        include forms/descriptors
+    
+    template#listItem
+      button.list-group-item.list-group-item-action.py-1.px-3.overflow-ellipsis
+      
+    script(src="js/form.js")
+    script(src="js/scripts.js")
+    script(src="js/cloak.js")

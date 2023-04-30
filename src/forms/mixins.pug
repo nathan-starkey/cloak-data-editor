@@ -25,12 +25,15 @@ mixin string(name, label)
     input.form-control(name=name)
     block
 
-mixin mlstring(name, label)
+mixin mlstring(name, label, overflowX = false)
   .mb-3
     label.form-label= label
-    textarea.form-control(name=name)
+    if overflowX
+      textarea.form-control.overflow-auto.text-nowrap(name=name)
+    else
+      textarea.form-control(name=name)
     block
 
-mixin form
-  form.p-3.pb-0(autocomplete="off" onsubmit="event.preventDefault()" oninput="unsave()")
+mixin form(name)
+  form.p-3.pb-0(hidden name=name autocomplete="off" spellcheck="false" onsubmit="event.preventDefault()" oninput="modifyForm()")
     block
