@@ -3,6 +3,8 @@ html.h-100(data-bs-theme="dark")
   head
     title Cloak Data Editor
     link(rel="stylesheet" href="css/styles.css")
+    script(src="js/popper.js")
+    script(src="js/bootstrap.js")
   
   body.h-100
     div.row.g-0.h-100
@@ -30,6 +32,16 @@ c:!band`)
 
         div.sticky-bottom
           div.fade-in
+          div.bg-dark.p-3.pt-0
+            div.dropdown.d-inline-block
+              button#createNewBtn.btn.btn-primary.dropdown-toggle(disabled data-bs-toggle="dropdown") Create new
+              ul.dropdown-menu
+                li:a.dropdown-item(onclick="createNewItem('creatures')") Creature
+                li:a.dropdown-item(onclick="createNewItem('tiles')") Tile
+                li:a.dropdown-item(onclick="createNewItem('worlds')") World
+                li:a.dropdown-item(onclick="createNewItem('descriptors')") Descriptor
+
+            button#deleteCurrentBtn.float-end.btn.btn-danger(disabled) Delete current
 
       div.col.h-100.overflow-y-auto
         //- Main content

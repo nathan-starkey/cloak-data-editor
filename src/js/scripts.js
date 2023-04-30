@@ -63,7 +63,7 @@ async function saveChanges() {
 }
 
 function editItem(item, itemId, formName) {
-  if (isItemSelected(itemId, formName)) {
+  if (item == null || item == theItem) {
     theItem = null;
     theItemId = "";
     theFormName = "";
@@ -77,6 +77,43 @@ function editItem(item, itemId, formName) {
   updateForm();
 }
 
+function deleteCurrentItem() {
+  if (!confirm(`Delete '${theItemId}' - are you sure?`)) return;
+
+  let index = theContent[theFormName].indexOf(theItem);
+
+  if (index != -1) {
+    theContent[theFormName].splice(index, 1);
+  }
+
+  isSaved = false;
+  updateFileStatus();
+  editItem(null, "", "");
+}
+
+function createNewItem(formName) {
+  if (!Array.isArray(theContent[formName])) {
+    throw new Error("invalid formName");
+  }
+
+  let i = 0;
+  let id;
+
+  do {
+    id = "new" + i.toString().padStart(2, "0");
+    ++i;
+  } while (theContent[formName].find(item => item.id == id));
+  
+  let item = {id};
+
+  theContent[formName].push(item);
+
+  isSaved = false;
+  updateFileStatus();
+  editItem(item, id, formName);
+  revealSelectedItem();
+}
+
 function modifyForm() {
   let form = document.forms.namedItem(theFormName);
 
@@ -85,12 +122,6 @@ function modifyForm() {
   isSaved = false;
   updateFileStatus();
 }
-
-let a = {
-  filter: "string",
-  within: "",
-  invert: false
-};
 
 function setFilterString(string) {
   theFilterTerms = string.split(" ").filter(s => s).map(s => {
@@ -141,10 +172,6 @@ function modifyList() {
   updateList();
 }
 
-function isItemSelected(itemId, formName) {
-  return itemId && theItemId && itemId == theItemId && formName == theFormName;
-}
-
 function isItemShown(itemId, formName) {
   for (let term of theFilterTerms) {
     if (term.within && term.invert == formName.startsWith(term.within)) continue;
@@ -159,6 +186,8 @@ function isItemShown(itemId, formName) {
 
 //#region View
 
+const deleteCurrentBtn = document.getElementById("deleteCurrentBtn");
+const createNewBtn = document.getElementById("createNewBtn");
 const fileNameLbl = document.getElementById("fileNameLbl");
 const openFileBtn = document.getElementById("openFileBtn");
 const saveFileBtn = document.getElementById("saveFileBtn");
@@ -167,9 +196,28 @@ const listItem = document.getElementById("listItem");
 const listDiv = document.getElementById("listDiv");
 const sidebar = document.getElementById("sidebar");
 
+deleteCurrentBtn.addEventListener("click", deleteCurrentItem);
 openFileBtn.addEventListener("click", obtainHandle);
 saveFileBtn.addEventListener("click", saveChanges);
 searchBox.addEventListener("input", () => setFilterString(searchBox.value));
+
+window.addEventListener("keydown", ev => {
+  if (ev.code == "KeyS" && ev.ctrlKey) {
+    ev.preventDefault();
+    ev.stopImmediatePropagation();
+
+    if (theHandle) {
+      saveChanges();
+    }
+  }
+});
+
+window.addEventListener("beforeunload", ev => {
+  if (!isSaved) {
+    ev.preventDefault();
+    return (ev.returnValue = "");
+  }
+}, { capture: true });
 
 function updateFileStatus() {
   fileNameLbl.innerText = theHandle ? theHandle.name : "No file open.";
@@ -184,6 +232,8 @@ function updateList() {
   let template = listItem.content.firstElementChild;
 
   searchBox.disabled = false;
+  createNewBtn.disabled = false;
+  deleteCurrentBtn.disabled = !theItem;
   listDiv.innerHTML = "";
 
   let list = [];
@@ -191,15 +241,19 @@ function updateList() {
   for (let formName in theContent) {
     if (!Array.isArray(theContent[formName])) continue;
 
+    let sublist = [];
+
     for (let item of theContent[formName]) {
-      list.push([item, formName]);
+      if (!item || typeof item != "object" || typeof item.id != "string") continue;
+      sublist.push({ item, formName });
     }
+
+    sublist.sort((a, b) => a.item.id < b.item.id ? -1 : a.item.id == b.item.id ? 0 : 1);
+    list.push(...sublist);
   }
 
-  list.sort(([a], [b]) => !b.id || a.id < b.id ? -1 : a.id == b.id ? 0 : 1);
-
-  for (let [item, formName] of list) {
-    if (!isItemShown(item.id || "", formName)) {
+  for (let {item, formName} of list) {
+    if (!isItemShown(item.id, formName)) {
       continue;
     }
 
@@ -208,12 +262,20 @@ function updateList() {
     btn.addEventListener("click", editItem.bind(null, item, item.id, formName));
     listDiv.append(btn);
 
-    if (isItemSelected(item.id, formName)) {
+    if (item == theItem) {
       btn.classList.add("active");
     }
   }
 
   sidebar.scrollTop = scrollTop;
+}
+
+function revealSelectedItem() {
+  let elem = listDiv.querySelector(".active");
+
+  if (elem) {
+    elem.scrollIntoView({ block: "center", behavior: "smooth" });
+  }
 }
 
 function updateForm() {

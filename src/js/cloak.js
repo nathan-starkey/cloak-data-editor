@@ -17,7 +17,7 @@ function deserialize(content) {
   }
 
   for (let item of content.descriptors) {
-    item.replacers = item.replacers.map(r => r.value + (r.weight == 1 ? "" : "=" + r.weight)).join("\n");
+    item.replacers = item.replacers.map(({value, weight}) => weight == 1 ? value : `${value}=${weight}`).join("\n");
   }
 
   return content;
@@ -45,10 +45,10 @@ function serialize(content) {
 
   for (let item of content.descriptors) {
     item.replacers = item.replacers.split("\n").filter(s => s)
-      .map(line => {
-        let [value, weight] = splitByFirst(line, "=");
-        weight = Math.abs(parseFloat(weight));
-        if (!Number.isFinite(weight)) weight = 1;
+      .map(s => {
+        let [value, weight] = splitByFirst(s, "=");
+        weight = parseFloat(weight);
+        weight = !Number.isFinite(weight) ? 1 : weight;
         return {value, weight};
       });
   }
@@ -56,7 +56,10 @@ function serialize(content) {
   return content;
 }
 
-function splitByFirst(str, delim) {
-  let arr = str.split(delim);
-  return [arr.splice(0, 1), arr.join(delim)];
+function splitByFirst(string, delim) {
+  return splitAt(string, string.indexOf(delim));
+}
+
+function splitAt(string, index) {
+  return [string.slice(0, index), string.slice(index)];
 }
