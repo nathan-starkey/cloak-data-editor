@@ -7,6 +7,7 @@ function deserialize(content) {
     item.tilePalette = item.tilePalette.join("\n");
   }
 
+  /*
   for (let item of content.creatures) {
     item.healthMin = item.health[0];
     item.healthMax = item.health[1];
@@ -19,6 +20,7 @@ function deserialize(content) {
   for (let item of content.descriptors) {
     item.replacers = item.replacers.map(({value, weight}) => weight == 1 ? value : `${value}=${weight}`).join("\n");
   }
+  */
 
   return content;
 }
@@ -34,6 +36,7 @@ function serialize(content) {
     item.chunks ||= [];
   }
 
+  /*
   for (let item of content.creatures) {
     item.health = [item.healthMin, item.healthMax];
     item.damage = [item.damageMin, item.damageMax];
@@ -42,7 +45,9 @@ function serialize(content) {
     delete item.damageMin;
     delete item.damageMax;
   }
+  */
 
+  /*
   for (let item of content.descriptors) {
     item.replacers = item.replacers.split("\n").filter(s => s)
       .map(s => {
@@ -52,6 +57,7 @@ function serialize(content) {
         return {value, weight};
       });
   }
+  */
 
   return content;
 }

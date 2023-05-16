@@ -48,7 +48,18 @@ async function saveChanges() {
   try {
     const writable = await theHandle.createWritable();
     const content = structuredClone(theContent);
-    const text = JSON.stringify(serialize(content));
+
+    content.worlds.forEach(world => {
+      world.chunks.forEach(chunk => {
+        chunk.data = "{WRAP}[" + chunk.data + "]{/WRAP}";
+      });
+    });
+
+    let text = JSON.stringify(serialize(content), null, 2);
+
+    text = text.split("\"{WRAP}").join("");
+    text = text.split("{/WRAP}\"").join("");
+
     await writable.write(text);
     await writable.close();
 
@@ -240,6 +251,10 @@ function updateList() {
 
   for (let formName in theContent) {
     if (!Array.isArray(theContent[formName])) continue;
+    if (formName == "descriptors") continue; // DEBUG
+    if (formName == "worlds") continue; // DEBUG
+    if (formName == "sprites") continue; // DEBUG
+    if (formName == "images") continue; // DEBUG
 
     let sublist = [];
 
