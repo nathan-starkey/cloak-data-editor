@@ -12,7 +12,7 @@ function getElementValue(elem) {
     } else {
       return elem.value;
     }
-  } else if (typeof elem.value == "string") {
+  } else if ("value" in elem) {
     return elem.value;
   } else {
     return undefined;
@@ -34,8 +34,8 @@ function setElementValue(elem, value) {
       elem.value = value ?? "";
     }
     return;
-  } else if (typeof elem.value == "string") {
-    elem.value = value ?? "";
+  } else if ("value" in elem) {
+    elem.value = value;
   }
 }
 
@@ -48,7 +48,9 @@ function getFormValues(form) {
   let values = {};
 
   for (let elem of form.elements) {
-    values[elem.name] = getElementValue(elem);
+    if (elem.name) {
+      values[elem.name] = getElementValue(elem);
+    }
   }
 
   return values;
@@ -61,6 +63,8 @@ function getFormValues(form) {
  */
 function setFormValues(form, values) {
   for (let elem of form.elements) {
-    setElementValue(elem, values[elem.name]);
+    if (elem.name) {
+      setElementValue(elem, values[elem.name]);
+    }
   }
 }

@@ -1,0 +1,62 @@
+mixin Form(name)
+  form.p-3(hidden name=name autocomplete="off" spellcheck="false" onsubmit="event.preventDefault()" oninput="notifyChanges()")
+    block
+    button.btn.btn-danger(onclick="deleteCurrentItem()") Delete Item
+
+mixin TextBox(name, label = humanize(name))
+  .mb-3
+    label.form-label= label
+    input.form-control(name=name)
+    block
+
+mixin NumberBox(name, label = humanize(name))
+  .mb-3
+    label.form-label= label
+    input.form-control(name=name, type="number")
+    block
+
+mixin CheckBox(name, label = humanize(name))
+  .mb-3.form-check
+    input.form-check-input(name=name, type="checkbox")
+    label.form-check-label= label
+    block
+
+mixin TextArea(name, label = humanize(name))
+  .mb-3
+    label.form-label= label
+    textarea(class=`form-control${attributes.wrap == undefined || attributes.wrap ? "" : " overflow-auto text-nowrap"}`)&attributes({name})&attributes((delete attributes.wrap, attributes))
+    block
+
+mixin Range(nameI, nameJ, label = humanize(nameI))
+  .mb-3
+    label.form-label= label
+    .input-group
+      input.form-control(name=nameI, type="number")
+      span.input-group-text to
+      input.form-control(name=nameJ, type="number")
+    block
+
+-
+  function humanize(string) {
+    if (string == "id") return "ID";
+
+    let result = "";
+
+    for (let i = 0; i < string.length; ++i) {
+      if (i == 0) {
+        result += string[0].toUpperCase();
+        continue;
+      }
+
+      let code = string.charCodeAt(i);
+
+      if (code >= 65 && code <= 90) {
+        result += " " + string[i].toUpperCase();
+        continue;
+      }
+
+      result += string[i];
+    }
+    
+    return result;
+  }

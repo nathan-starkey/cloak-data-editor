@@ -1,0 +1,41 @@
++Form("creatures")
+  +TextBox("id")
+  +TextBox("name"): .form-text Supports flavor text.
+  +TextArea("description")(wrap=true): .form-text Supports flavor text.
+  +TextArea("sprites"): .form-text Multiple entries separated by new lines.
+  +NumberBox("width")
+  +NumberBox("height")
+  +CheckBox("canFly")
+  +Range("healthMin", "healthMax", "Health")
+  +Range("damageMin", "damageMax", "Damage")
+
++Form("tiles")
+  +TextBox("id")
+  +TextBox("name"): .form-text Supports flavor text.
+  +TextArea("description")(wrap=true): .form-text Supports flavor text.
+  +TextArea("sprites"): .form-text Multiple entries separated by new lines.
+  +CheckBox("isSolid")
+  +CheckBox("isOpaque")
+
++Form("worlds")
+  +TextBox("id")
+  +TextBox("name"): .form-text Supports flavor text.
+  +TextArea("tilePalette"): .form-text Multiple entries separated by new lines.
+
++Form("images")
+  +TextBox("id")
+  +TextBox("path")
+
++Form("sprites")
+  +TextBox("id")
+  +TextBox("image")
+  +NumberBox("x")
+  +NumberBox("y")
+  +NumberBox("width")
+  +NumberBox("height")
+
+// +Form("descriptors")
+  +TextBox("id")
+  +TextArea("replacers")
+    .form-text Multiple entries separated by new lines.
+    .form-text Entry format: replacer[=weight]

@@ -1,0 +1,126 @@
+// Functions
+
+@import "bootstrap/scss/functions";
+
+$custom-padding-x: 1rem;
+$custom-padding-y: .125rem;
+
+// Color system
+
+$primary: #007f5c;
+$secondary: #3b444b;
+
+// Options
+
+$enable-transitions: false;
+
+// Buttons
+
+$btn-padding-y: $custom-padding-y;
+$btn-padding-x: $custom-padding-x;
+$btn-border-radius: 0;
+
+// Dropdowns
+
+$dropdown-padding-y: .25rem;
+$dropdown-border-radius: 0;
+$dropdown-item-padding-y: $custom-padding-y;
+$dropdown-item-padding-x: $custom-padding-x;
+
+// List group
+
+$list-group-item-padding-y: $custom-padding-y;
+$list-group-item-padding-x: $custom-padding-x;
+
+// Required modules
+
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/variables-dark";
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/root";
+@import "bootstrap/scss/reboot";
+
+// Optional modules
+
+@import "bootstrap/scss/containers";
+@import "bootstrap/scss/dropdown";
+@import "bootstrap/scss/grid";
+@import "bootstrap/scss/forms";
+@import "bootstrap/scss/buttons";
+@import "bootstrap/scss/button-group";
+@import "bootstrap/scss/list-group";
+@import "bootstrap/scss/helpers";
+@import "bootstrap/scss/utilities";
+@import "bootstrap/scss/utilities/api";
+
+// Custom styles
+
+.text
+{
+  display: inline-block;
+  padding: $custom-padding-y $custom-padding-x;
+}
+
+.btn
+{
+  vertical-align: baseline;
+}
+
+.list-group-header
+{
+  font-weight: bold;
+  padding: 0.125rem 1rem;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.overflow-ellipsis
+{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.overflow-y-auto
+{
+  overflow-y: auto;
+}
+
+.dropdown-item:active
+{
+  background-color: $dropdown-link-hover-bg;
+  color: $dropdown-link-hover-color;
+}
+
+*
+{
+  user-select: none;
+}
+
+#sidebar
+{
+  min-width: 300px;
+  max-width: 300px;
+}
+
+#createItemMenu>li>button
+{
+  text-transform: capitalize;
+}
+
+::-webkit-scrollbar-corner {
+	background-color: rgba(0, 0, 0, 0.075);
+}
+
+::-webkit-scrollbar
+{
+	background-color: rgba(0, 0, 0, 0.075);
+	width: .5rem;
+}
+
+::-webkit-scrollbar-thumb
+{
+	background-color: $secondary;
+	border-radius: 1rem;
+}

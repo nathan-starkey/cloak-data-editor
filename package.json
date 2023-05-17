@@ -1,10 +1,10 @@
 {
   "name": "cloak-data-editor",
-  "version": "0.0.0",
-  "description": "Editing tool used to modify/create new content for the game Cloak.",
-  "main": "",
+  "version": "1.1.0",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "parcel watch --public-url ./ index.pug",
+    "build": "parcel build --public-url ./ index.pug"
   },
   "repository": {
     "type": "git",
@@ -17,11 +17,11 @@
   },
   "homepage": "https://github.com/nathan-starkey/cloak-data-editor#readme",
   "dependencies": {
+    "@parcel/transformer-pug": "^2.8.3",
+    "@parcel/transformer-sass": "^2.8.3",
     "@popperjs/core": "^2.11.7",
-    "@types/pug": "^2.0.6",
     "@types/wicg-file-system-access": "^2020.9.6",
     "bootstrap": "^5.3.0-alpha3",
-    "npm-run-all": "^4.1.5",
-    "pug": "^3.0.2"
+    "parcel": "^2.8.3"
   }
 }
