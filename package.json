@@ -4,7 +4,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "parcel watch --public-url ./ index.pug",
-    "build": "parcel build --public-url ./assets --dist-dir dist/assets index.pug & move dist\\assets\\index.html dist\\index.html"
+    "build": "parcel build --no-source-maps --public-url ./assets --dist-dir dist/assets index.pug & move dist\\assets\\index.html dist\\index.html"
   },
   "repository": {
     "type": "git",
