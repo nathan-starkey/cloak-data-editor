@@ -87,6 +87,10 @@ $list-group-item-padding-x: $custom-padding-x;
   overflow-y: auto;
 }
 
+.overflow-y-scroll {
+  overflow-y: scroll;
+}
+
 .dropdown-item:active
 {
   background-color: $dropdown-link-hover-bg;
@@ -102,6 +106,12 @@ $list-group-item-padding-x: $custom-padding-x;
 {
   min-width: 300px;
   max-width: 300px;
+}
+
+#searchBox
+{
+  border-radius: 0;
+  padding: $custom-padding-y $custom-padding-x;
 }
 
 #createItemMenu>li>button

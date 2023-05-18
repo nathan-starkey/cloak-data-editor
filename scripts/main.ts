@@ -1,36 +1,54 @@
-///<reference path="api.ts"/>
+///<reference path="data-editor.ts"/>
 ///<reference path="cloak.ts"/>
 ///<reference path="page.ts"/>
 
-const VERSION = "v1.1.0";
-const provider: IProvider = new CloakProvider();
+// Global constants
 
-declare interface Window {
-  notifyChanges(): void;
+const VERSION = "v1.1.1";
+const plugin: DataEditor.IPlugin = new Cloak.Plugin();
 
-  deleteCurrentItem(): void;
-}
+// Global callbacks
+
+let notifyChanges: () => void = () => {};
+let deleteCurrentItem: () => void = () => {};
+
+// When the document is ready...
 
 document.addEventListener("DOMContentLoaded", () => {
+
+  // Internal state
+
   let handle: FileSystemFileHandle | null = null;
   let isBusy = false;
   let isSaved = true;
   let selType = "";
   let selItem = "";
 
-  document.getElementById("versionLbl")!.innerText = VERSION;
+  // Render the default state
 
   updateFileStatus();
   updateItemMenu();
   updateLists();
 
-  // Update checker
-  (async function () {
-    if (JSON.parse(await (await fetch("https://api.github.com/repos/nathan-starkey/cloak-data-editor/releases/latest")).text()).tag_name != VERSION) {
-      document.getElementById("infoUpdateAvail")!.hidden = false;
-    }
-  })();
+  // Display the version string
 
+  document.getElementById("versionLbl")!.innerText = VERSION;
+
+  // Query github for the latest version
+
+  fetch("https://api.github.com/repos/nathan-starkey/cloak-data-editor/releases/latest")
+    .then(res => res.text())
+    .then(text => {
+      let data = JSON.parse(text);
+
+      if (data.tag_name != VERSION) {
+        document.getElementById("infoUpdateAvail")!.hidden = false;
+      }
+    })
+    .catch(err => console.error(err));
+
+  // Define some onclick event listeners
+  
   document.getElementById("openFileBtn")!.addEventListener("click", async () => {
     isBusy = true;
     updateFileStatus();
@@ -41,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const [handle_] = await showOpenFilePicker();
   
       try {
-        await provider.openFile(handle_);
+        await plugin.openFile(handle_);
 
         handle = handle_;
 
@@ -64,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("errorSaveFile")!.hidden = true;
 
     try {
-      await provider.saveFile(handle!);
+      await plugin.saveFile(handle!);
 
       isSaved = true;
     } catch (err) {
@@ -76,12 +94,22 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Define the searchBox input event listener
+
+  document.getElementById("searchBox")!.addEventListener("input", () => {
+    updateLists();
+  });
+
+  // Prevent leaving with unsaved changes
+
   window.addEventListener("beforeunload", ev => {
     if (!isSaved) {
       ev.preventDefault();
       return (ev.returnValue = "");
     }
   }, { capture: true });
+
+  // Define some handy keyboard shortcuts
 
   window.addEventListener("keydown", ev => {
     if (ev.code == "KeyO" && ev.ctrlKey) {
@@ -95,48 +123,52 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  window.notifyChanges = () => {
+  // Export global callbacks
+
+  notifyChanges = function () {
     isSaved = false;
     updateFileStatus();
-    provider.notifyChanges();
+    plugin.notifyChanges();
   };
 
-  window.deleteCurrentItem = () => {
+  deleteCurrentItem = function () {
     if (selType && confirm("Delete '" + selItem + "', are you sure?")) {
-      provider.deleteItem(selType, selItem);
-      provider.editItem("", "");
+      plugin.deleteItem(selType, selItem);
+      plugin.editItem("", "");
       selType = "";
       selItem = "";
-      window.notifyChanges();
+      notifyChanges();
       updateLists();
     }
   };
 
+  // Callbacks to update the view with scope-level state
+
   function updateFileStatus() {
-    renderFileStatus(handle, isBusy, isSaved);
+    Page.renderFileStatus(handle, isBusy, isSaved);
   }
 
   function updateLists() {
-    renderLists(Object.fromEntries(provider.getTypes().map(type => [type, provider.getItemsOfType(type)])), selType, selItem, (type: string, item: string) => {
+    Page.renderLists(Object.fromEntries(plugin.getTypes().map(type => [type, plugin.getItemsOfType(type)])), selType, selItem, (type: string, item: string) => {
       selType = type;
       selItem = item;
 
       updateLists();
-      provider.editItem(type, item);
+      plugin.editItem(type, item);
     });
   }
 
   function updateItemMenu() {
-    renderItemMenu(provider.getTypes(), type => {
-      let item = provider.createItem(type);
+    Page.renderItemMenu(plugin.getTypes(), type => {
+      let item = plugin.createItem(type);
 
       selType = type;
       selItem = item;
 
       updateLists();
       document.getElementById("list")!.getElementsByClassName("active").item(0)!.scrollIntoView({ block: "center" });
-      window.notifyChanges();
-      provider.editItem(type, item);
+      notifyChanges();
+      plugin.editItem(type, item);
     });
   }
 });
