@@ -4,7 +4,7 @@
 
 // Global constants
 
-const VERSION = "v1.1.1";
+const VERSION = "v1.1.2";
 const plugin: DataEditor.IPlugin = new Cloak.Plugin();
 
 // Global callbacks
