@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "bootstrap": "^5.3.0",
+    "cloak-data-utils": "github:nathan-starkey/cloak-data-utils",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
