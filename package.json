@@ -1,27 +1,22 @@
 {
   "name": "cloak-data-editor",
-  "version": "1.1.2",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "parcel watch --public-url ./ index.pug",
-    "build": "parcel build --no-source-maps --public-url ./assets --dist-dir dist/assets index.pug & move dist\\assets\\index.html dist\\index.html"
+    "prebuild": "run-s clean",
+    "build": "parcel build src/index.html --no-source-maps",
+    "clean": "rimraf ./dist",
+    "start": "parcel src/index.html --open"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/nathan-starkey/cloak-data-editor.git"
-  },
-  "author": "Redstar Dev",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/nathan-starkey/cloak-data-editor/issues"
-  },
-  "homepage": "https://github.com/nathan-starkey/cloak-data-editor#readme",
   "dependencies": {
-    "@parcel/transformer-pug": "^2.8.3",
-    "@parcel/transformer-sass": "^2.8.3",
-    "@popperjs/core": "^2.11.7",
-    "@types/wicg-file-system-access": "^2020.9.6",
-    "bootstrap": "^5.3.0-alpha3",
-    "parcel": "^2.8.3"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.16",
+    "@types/react-dom": "^18.2.7",
+    "npm-run-all": "^4.1.5",
+    "parcel": "^2.9.3",
+    "process": "^0.11.10",
+    "rimraf": "^5.0.1",
+    "typescript": "^5.1.6"
   }
 }
