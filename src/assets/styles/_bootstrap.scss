@@ -1,0 +1,24 @@
+@import "~bootstrap/scss/_functions";
+
+// Variable overrides
+@import "./variable-overrides";
+
+@import "~bootstrap/scss/_variables";
+@import "~bootstrap/scss/_variables-dark";
+
+// Map overrides
+
+@import "~bootstrap/scss/_maps";
+@import "~bootstrap/scss/_mixins";
+@import "~bootstrap/scss/_root";
+
+// Optional components
+@import "~bootstrap/scss/_utilities";
+@import "~bootstrap/scss/_reboot";
+@import "~bootstrap/scss/_type";
+@import "~bootstrap/scss/_images";
+@import "~bootstrap/scss/_containers";
+@import "~bootstrap/scss/_buttons";
+@import "~bootstrap/scss/_grid";
+@import "~bootstrap/scss/_helpers";
+@import "~bootstrap/scss/utilities/_api";

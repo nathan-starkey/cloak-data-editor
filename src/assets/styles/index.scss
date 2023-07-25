@@ -1,24 +1,68 @@
-@import "~bootstrap/scss/_functions";
+@import "./bootstrap";
 
-// Variable overrides
-// ...
+html, body
+{
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  user-select: none;
+}
 
-@import "~bootstrap/scss/_variables";
-@import "~bootstrap/scss/_variables-dark";
+.app
+{
+  @extend .row, .g-0;
+  display: flex;
+  flex-wrap: nowrap;
+  height: 100%;
+}
 
-// Map overrides
-// ...
+.app-sidebar
+{
+  @extend .col, .border-end;
+  display: flex;
+  flex-direction: column;
+  max-width: 300px;
+  min-width: 300px;
+  overflow-y: scroll; 
+}
 
-@import "~bootstrap/scss/_maps";
-@import "~bootstrap/scss/_mixins";
-@import "~bootstrap/scss/_root";
+.app-content
+{
+  @extend .col, .bg-dark-subtle;
+  overflow-y: auto;
+}
 
-// Optional components
-@import "~bootstrap/scss/_utilities";
-@import "~bootstrap/scss/_reboot";
-@import "~bootstrap/scss/_type";
-@import "~bootstrap/scss/_images";
-@import "~bootstrap/scss/_containers";
-@import "~bootstrap/scss/_grid";
-@import "~bootstrap/scss/_helpers";
-@import "~bootstrap/scss/utilities/_api";
+.app-project-status
+{
+  display: flex;
+  white-space: nowrap;
+}
+
+.app-project-status>label
+{
+  flex-grow: 1;
+  overflow: hidden;
+  padding: $custom-padding-y $custom-padding-x;
+  text-overflow: ellipsis;
+}
+
+/*
+.alert
+{
+  @extend .bg-danger, .text-light;
+  display: inline-block;
+  margin-bottom: $spacer * .25;
+  padding: $custom-padding-y $custom-padding-x;
+}
+
+.output
+{
+  @extend .bg-dark-subtle, .text-light;
+  display: inline-block;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: small;
+  line-height: normal;
+  padding: $spacer * .25;
+  white-space: pre-wrap;
+}
+*/
