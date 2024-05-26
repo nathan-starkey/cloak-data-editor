@@ -1,0 +1,21 @@
+{
+  "name": "cloak-data-editor",
+  "version": "0.1.0",
+  "description": "",
+  "source": "src/index.html",
+  "scripts": {
+    "clean": "rm -rf .parcel-cache dist",
+    "serve": "parcel serve",
+    "build": "parcel build"
+  },
+  "keywords": [],
+  "author": "Redstar",
+  "dependencies": {
+    "@types/jquery": "^3.5.30",
+    "@types/wicg-file-system-access": "^2023.10.5",
+    "bootstrap": "^5.3.3",
+    "jquery": "^3.7.1",
+    "parcel": "^2.12.0",
+    "typescript": "^5.4.5"
+  }
+}
