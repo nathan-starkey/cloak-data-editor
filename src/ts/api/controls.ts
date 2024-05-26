@@ -37,3 +37,21 @@ export const ControlNumber: Control<number> = (name: string, value: number, chan
 
   return elems[0];
 };
+
+export const ControlBoolean: Control<boolean> = (name: string, value: boolean, changed: (value: boolean) => void) => {
+  let elems = $(/*html*/`
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" value="">
+      <label class="form-check-label"></label>
+    </div>
+  `);
+
+  let label = elems.find("label");
+  let input = elems.find("input");
+
+  label.text(name);
+  input.prop("checked", value);
+  input.on("input", () => changed(input.prop("checked")));
+
+  return elems[0];
+};

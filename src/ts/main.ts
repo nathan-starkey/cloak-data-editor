@@ -1,16 +1,14 @@
-import { ControlNumber, ControlString } from "./api/controls";
-import { create_form } from "./api/forms";
+import { create_tile_form } from "./cloak/forms";
+import * as data from "./cloak/types/data";
 
-let form = create_form([
-  ["name", "Name", ControlString],
-  ["description", "Description", ControlString],
-  ["width", "Width", ControlNumber],
-  ["height", "Height", ControlNumber]
-], {
+let tile: data.Tile = {
   name: "",
   description: "",
-  width: 0,
-  height: 0
-});
+  is_opaque: false,
+  is_solid: false,
+  sprites: []
+};
+
+let form = create_tile_form(tile);
 
 document.body.append(...form);
