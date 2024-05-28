@@ -1,21 +1,16 @@
 import {
-  ControlString as str,
-  ControlNumber as num,
-  ControlBoolean as bool
+  create_object_proxy as prop,
+  create_boolean_control as bool,
+  create_string_control as str
 } from "../api/controls";
-
-import {
-  create_form,
-  create_property_accessor as prop
-} from "../api/forms";
 
 import * as data from "./types/data";
 
 export function create_tile_form(tile: data.Tile) {
-  return create_form(tile, [
-    ["Name", str, prop("name")],
-    ["Description", str, prop("description")],
-    ["Is Opaque", bool, prop("is_opaque")],
-    ["Is Solid", bool, prop("is_solid")]
-  ]);
+  return [
+    str("Name", prop(tile, "name")),
+    str("Description", prop(tile, "description")),
+    bool("Is Opaque", prop(tile, "is_opaque")),
+    bool("Is Solid", prop(tile, "is_solid"))
+  ];
 }

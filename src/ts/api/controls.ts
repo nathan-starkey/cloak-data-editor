@@ -1,44 +1,28 @@
-// Provide a default set of Controls for the user:
+/** Represents an abstract handle for a value. */
+export type Proxy<T> = {
+  get(): T;
 
-import { Control } from "./forms";
-
-export const ControlString: Control<string> = (name: string, value: string, changed: (value: string) => void) => {
-  let elems = $(/*html*/`
-    <div class="mb-3">
-      <label class="form-label"></label>
-      <input class="form-control" placeholder="(Empty)">
-    </div>
-  `);
-
-  let label = elems.find("label");
-  let input = elems.find("input");
-
-  label.text(name);
-  input.val(value);
-  input.on("input", () => changed(input.val() || ""));
-
-  return elems[0];
+  set(value: T): void;
 };
 
-export const ControlNumber: Control<number> = (name: string, value: number, changed: (value: number) => void) => {
-  let elems = $(/*html*/`
-    <div class="mb-3">
-      <label class="form-label"></label>
-      <input class="form-control" type="number" placeholder="0">
-    </div>
-  `);
+/** Represents an initializer for a user input field. */
+export type Control<T> = (name: string, proxy: Proxy<T>) => HTMLElement;
 
-  let label = elems.find("label");
-  let input = elems.find("input");
+/** Create a simple proxy for a property of an object. */
+export function create_object_proxy<T, K extends keyof T>(object: T, property: K): Proxy<T[K]> {
+  return {
+    set(value: T[K]) {
+      object[property] = value;
+    },
 
-  label.text(name);
-  input.val(value);
-  input.on("input", () => changed(parseFloat(input.val() || "") || 0));
+    get() {
+      return object[property];
+    }
+  };
+}
 
-  return elems[0];
-};
-
-export const ControlBoolean: Control<boolean> = (name: string, value: boolean, changed: (value: boolean) => void) => {
+/** Create a user input field for a boolean. */
+export const create_boolean_control: Control<boolean> = (name: string, proxy: Proxy<boolean>) => {
   let elems = $(/*html*/`
     <div class="form-check">
       <input class="form-check-input" type="checkbox" value="">
@@ -50,8 +34,46 @@ export const ControlBoolean: Control<boolean> = (name: string, value: boolean, c
   let input = elems.find("input");
 
   label.text(name);
-  input.prop("checked", value);
-  input.on("input", () => changed(input.prop("checked")));
+  input.prop("checked", proxy.get());
+  input.on("input", () => proxy.set(input.prop("checked")));
+
+  return elems[0];
+};
+
+/** Create a user input field for a number. */
+export const create_number_control: Control<number> = (name: string, proxy: Proxy<number>) => {
+  let elems = $(/*html*/`
+    <div class="mb-3">
+      <label class="form-label"></label>
+      <input class="form-control" type="number" placeholder="0">
+    </div>
+  `);
+
+  let label = elems.find("label");
+  let input = elems.find("input");
+
+  label.text(name);
+  input.val(proxy.get());
+  input.on("input", () => proxy.set(parseFloat(input.val() || "") || 0));
+
+  return elems[0];
+};
+
+/** Create a user input field for a string. */
+export const create_string_control: Control<string> = (name: string, proxy: Proxy<string>) => {
+  let elems = $(/*html*/`
+    <div class="mb-3">
+      <label class="form-label"></label>
+      <input class="form-control" placeholder="(Empty)">
+    </div>
+  `);
+
+  let label = elems.find("label");
+  let input = elems.find("input");
+
+  label.text(name);
+  input.val(proxy.get());
+  input.on("input", () => proxy.set(input.val() || ""));
 
   return elems[0];
 };
