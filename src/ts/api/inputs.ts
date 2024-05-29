@@ -5,9 +5,6 @@ export type Proxy<T> = {
   set(value: T): void;
 };
 
-/** Represents an initializer for a user input field. */
-export type Control<T> = (name: string, proxy: Proxy<T>) => HTMLElement;
-
 /** Create a simple proxy for a property of an object. */
 export function create_object_proxy<T, K extends keyof T>(object: T, property: K): Proxy<T[K]> {
   return {
@@ -22,7 +19,7 @@ export function create_object_proxy<T, K extends keyof T>(object: T, property: K
 }
 
 /** Create a user input field for a boolean. */
-export const create_boolean_control: Control<boolean> = (name: string, proxy: Proxy<boolean>) => {
+export function create_input_checkbox(name: string, proxy: Proxy<boolean>): HTMLElement {
   let elems = $(/*html*/`
     <div class="form-check">
       <input class="form-check-input" type="checkbox" value="">
@@ -38,10 +35,10 @@ export const create_boolean_control: Control<boolean> = (name: string, proxy: Pr
   input.on("input", () => proxy.set(input.prop("checked")));
 
   return elems[0];
-};
+}
 
 /** Create a user input field for a number. */
-export const create_number_control: Control<number> = (name: string, proxy: Proxy<number>) => {
+export function create_input_number(name: string, proxy: Proxy<number>): HTMLElement {
   let elems = $(/*html*/`
     <div class="mb-3">
       <label class="form-label"></label>
@@ -57,10 +54,10 @@ export const create_number_control: Control<number> = (name: string, proxy: Prox
   input.on("input", () => proxy.set(parseFloat(input.val() || "") || 0));
 
   return elems[0];
-};
+}
 
-/** Create a user input field for a string. */
-export const create_string_control: Control<string> = (name: string, proxy: Proxy<string>) => {
+/** Create a user input field for a single-line string. */
+export function create_input_text(name: string, proxy: Proxy<string>): HTMLElement {
   let elems = $(/*html*/`
     <div class="mb-3">
       <label class="form-label"></label>
@@ -76,4 +73,23 @@ export const create_string_control: Control<string> = (name: string, proxy: Prox
   input.on("input", () => proxy.set(input.val() || ""));
 
   return elems[0];
-};
+}
+
+/** Create a user input field for a multi-line string. */
+export function create_textarea(name: string, proxy: Proxy<string>): HTMLElement {
+  let elems = $(/*html*/`
+    <div class="mb-3">
+      <label class="form-label"></label>
+      <textarea class="form-control" rows="5" placeholder="(Empty)"></textarea>
+    </div>
+  `);
+
+  let label = elems.find("label");
+  let textarea = elems.find("textarea");
+
+  label.text(name);
+  textarea.val(proxy.get());
+  textarea.on("input", () => proxy.set(textarea.val() || ""));
+
+  return elems[0];
+}
