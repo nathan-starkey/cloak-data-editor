@@ -1,10 +1,11 @@
 import {
   create_object_proxy as prop,
-  create_input_checkbox as bool,
-  create_input_text as str,
-  create_textarea as mstr,
-  create_searchable_dropdown as drop
-} from "../api/inputs";
+  create_checkbox as bool,
+  create_text_input as str,
+  create_textarea as mstr
+} from "../api/index";
+
+import { create_dropdown as drop } from "../api/inputs/dropdown";
 
 // Temp, just to test the searchable dropdown control
 type Tile = {
