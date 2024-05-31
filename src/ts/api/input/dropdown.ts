@@ -91,9 +91,9 @@ function create_list_item<T>(name: string, active: boolean, clicked: () => void)
 }
 
 /** Create a user input for selecting a single value from a list. */
-export function create_dropdown<T>(name: string, proxy: Proxy<T>, entries: [name: string, value: T][]): HTMLElement {
+export function create_dropdown<T>(name: string, proxy: Proxy<T>, entries: [name: string, value: T][]) {
   // Create the elements
-  let elems = $(/*html*/`
+  let container = $(/*html*/`
     <div class="mb-3">
       <label class="form-label"></label>
 
@@ -110,10 +110,10 @@ export function create_dropdown<T>(name: string, proxy: Proxy<T>, entries: [name
   `);
 
   // Get the elements
-  let label = elems.find("label");
-  let dropdown_button = elems.find("button");
-  let dropdown_list = elems.find("ul");
-  let query_input = elems.find("input");
+  let label = container.find("label");
+  let dropdown_button = container.find("button");
+  let dropdown_list = container.find("ul");
+  let query_input = container.find("input");
 
   // Add the event handlers
   dropdown_button.on("shown.dropdown.bs", on_dropdown_shown);
@@ -194,5 +194,5 @@ export function create_dropdown<T>(name: string, proxy: Proxy<T>, entries: [name
     }
   }
 
-  return elems[0];
+  return container;
 }

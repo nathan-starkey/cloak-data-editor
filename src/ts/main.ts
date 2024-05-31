@@ -12,4 +12,4 @@ let tile = {
 
 let form = create_tile_form(tile);
 
-document.body.append(...form);
+$(document.body).append(...form);

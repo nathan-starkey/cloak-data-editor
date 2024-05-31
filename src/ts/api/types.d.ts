@@ -1,4 +1,4 @@
-/** Represents an abstract handle for a value. */
+/** Represents a proxy for getting and setting an abstract value. */
 export type Proxy<T> = {
   get(): T;
 
