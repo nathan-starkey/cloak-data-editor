@@ -4,7 +4,7 @@ import { Proxy } from "../types";
 export function create_checkbox(name: string, proxy: Proxy<boolean>): HTMLElement {
   // Create the elements
   let elems = $(/*html*/`
-    <div class="form-check">
+    <div class="mb-3 form-check">
       <input class="form-check-input" type="checkbox" value="">
 
       <label class="form-check-label"></label>
