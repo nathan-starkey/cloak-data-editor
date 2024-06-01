@@ -1,17 +1,17 @@
 import { Proxy } from "../types";
 
-/** Represents an associated name and value. */
-type Entry<T> = [name: string, value: T];
+/** Represents a name/value pair. */
+type Item<T> = [name: string, value: T];
 
 /**
  * Get the name associated with a given value.
- * @param entries List of name/value pairs to search through.
+ * @param items List of name/value pairs to search through.
  * @param value Value to find the associated name for.
  * @param fallback Fallback to return if no associated name is found.
  * @returns Name associated with the value, or the fallback string.
  */
-function get_associated_name<T>(entries: Entry<T>[], value: T, fallback: string) {
-  for (let [name, other] of entries) {
+function get_associated_name<T>(items: Item<T>[], value: T, fallback: string) {
+  for (let [name, other] of items) {
     if (other == value) return name;
   }
 
@@ -19,21 +19,21 @@ function get_associated_name<T>(entries: Entry<T>[], value: T, fallback: string)
 }
 
 /**
- * Get a list of entries containing a given query (case-insensitve).
- * @param entries List of entries to filter.
+ * Get a list of items containing a given query (case-insensitve).
+ * @param items List of items to filter.
  * @param query_lower Query to match with (must be lower case).
- * @returns List of entries containing the query.
+ * @returns List of items containing the query.
  */
-function get_matching_entries<T>(entries: Entry<T>[], query_lower: string) {
-  let results: Entry<T>[] = [];
+function get_matching_items<T>(items: Item<T>[], query_lower: string) {
+  let results: Item<T>[] = [];
 
-  for (let entry of entries) {
-    let [name] = entry;
+  for (let item of items) {
+    let [name] = item;
 
     name = name.toLowerCase();
 
     if (name.includes(query_lower)) {
-      results.push(entry);
+      results.push(item);
     }
   }
 
@@ -41,13 +41,13 @@ function get_matching_entries<T>(entries: Entry<T>[], query_lower: string) {
 }
 
 /**
- * Sort a list of entries by their name. Names that immediately start with the
- * query are brought to the top. Entries are subsequently sorted alphabetically.
- * @param entries List of entries to sort.
+ * Sort a list of items by their name. Names that immediately start with the
+ * query are brought to the top. Items are subsequently sorted alphabetically.
+ * @param items List of items to sort.
  * @param query_lower Query to match with (must be lower case).
  */
-function sort_entries<T>(entries: Entry<T>[], query_lower: string) {
-  entries.sort(function ([name], [other]) {
+function sort_items<T>(items: Item<T>[], query_lower: string) {
+  items.sort(function ([name], [other]) {
     name = name.toLowerCase();
     other = other.toLowerCase();
 
@@ -91,7 +91,7 @@ function create_list_item<T>(name: string, active: boolean, clicked: () => void)
 }
 
 /** Create a user input for selecting a single value from a list. */
-export function create_dropdown<T>(name: string, proxy: Proxy<T>, entries: [name: string, value: T][]) {
+export function create_dropdown<T>(name: string, proxy: Proxy<T>, items: Item<T>[]) {
   // Create the elements
   let container = $(/*html*/`
     <div class="mb-3">
@@ -118,15 +118,16 @@ export function create_dropdown<T>(name: string, proxy: Proxy<T>, entries: [name
   // Add the event handlers
   dropdown_button.on("shown.dropdown.bs", on_dropdown_shown);
   dropdown_button.on("hidden.dropdown.bs", on_dropdown_hidden);
-  query_input.on("input", on_query_string_changed);
 
-  query_input.on("keypress", ev => {
-    if (ev.key == "Enter") on_query_string_enter();
-  });
+  query_input.on("input", on_query_string_changed);
+  query_input.on("keypress", ev => ev.key == "Enter" && on_query_string_enter());
 
   // Initialize the dropdown
   label.text(name);
+
   render();
+
+  return container;
 
   // Private methods:
 
@@ -136,9 +137,9 @@ export function create_dropdown<T>(name: string, proxy: Proxy<T>, entries: [name
 
     // Find the matching entries
     let query = get_query_string(query_input).toLowerCase();
-    let results = get_matching_entries(entries, query);
+    let results = get_matching_items(items, query);
 
-    sort_entries(results, query);
+    sort_items(results, query);
 
     // Create the new list items
     let i = 0;
@@ -155,7 +156,7 @@ export function create_dropdown<T>(name: string, proxy: Proxy<T>, entries: [name
 
   function render() {
     let value = proxy.get();
-    let name = get_associated_name(entries, value, "<empty>");
+    let name = get_associated_name(items, value, "<empty>");
 
     dropdown_button.text(name);
 
@@ -166,6 +167,8 @@ export function create_dropdown<T>(name: string, proxy: Proxy<T>, entries: [name
     proxy.set(value);
     render();
   }
+
+  // Event handlers:
 
   function on_dropdown_shown() {
     // Focus the query input when the dropdown is shown
@@ -193,6 +196,4 @@ export function create_dropdown<T>(name: string, proxy: Proxy<T>, entries: [name
       if (list_item) list_item.click();
     }
   }
-
-  return container;
 }
