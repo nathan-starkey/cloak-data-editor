@@ -1,30 +1,16 @@
-import {
-  use_object_property as prop,
-  create_checkbox as bool,
-  create_text_input as str,
-  create_textarea as mstr,
-  create_dropdown as drop
-} from "../api/index";
+import { use_object_property } from "../utils/object-property-proxy";
+import { create_checkbox } from "../form-controls/checkbox";
+import { create_numeric_input } from "../form-controls/numeric-input";
+import { create_text_input } from "../form-controls/text-input";
+import { create_textarea } from "../form-controls/textarea";
+import { Creature } from "./types/data";
 
-// Temp, just to test the searchable dropdown control
-type Tile = {
-  name: string;
-  description: string;
-  is_opaque: boolean;
-  is_solid: boolean;
-  sprite: "sprite1" | "sprite2" | "sprite3" | "other";
-};
-
-export function create_tile_form(tile: Tile) {
+export function create_creature_form(creature: Creature) {
   return [
-    str("Name", prop(tile, "name")),
-    mstr("Description", prop(tile, "description")),
-    bool("Is Opaque", prop(tile, "is_opaque")),
-    bool("Is Solid", prop(tile, "is_solid")),
-    drop("Sprite", prop(tile, "sprite"), [
-      ["sprite 1", "sprite 1"],
-      ["sprite 2", "sprite 2"],
-      ["sprite 3", "sprite 3"]
-    ])
+    create_text_input("Name", use_object_property(creature, "name")),
+    create_textarea("Description", use_object_property(creature, "description")),
+    create_numeric_input("Width", use_object_property(creature, "width")),
+    create_numeric_input("Height", use_object_property(creature, "height")),
+    create_checkbox("Can Fly?", use_object_property(creature, "can_fly"))
   ];
 }

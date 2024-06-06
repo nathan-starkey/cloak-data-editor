@@ -1,15 +1,15 @@
-import { create_tile_form } from "./cloak/forms";
+import { create_creature_form } from "./cloak/forms";
 import * as data from "./cloak/types/data";
 
-let tile = {
+let creature: data.Creature = {
   name: "",
   description: "",
-  is_opaque: false,
-  is_solid: false,
-  // Temp, just to test the searchable dropdown control
-  sprite: "sprite1" as "sprite1"
+  width: 1,
+  height: 1,
+  can_fly: false,
+  sprites: []
 };
 
-let form = create_tile_form(tile);
+let form = create_creature_form(creature);
 
 $(document.body).append(...form);
